@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Account Statement</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f3f4f6;
+        color: #333;
+        padding: 0; /* Removed padding from body for consistent control */
+        margin: 0; /* Ensure no default margin for consistent control */
+      }
+      .container {
+        max-width: 90%;
+        margin: 0.5rem auto; /* Reduced margin for overall layout */
+        background-color: #fff;
+        padding: 0.5rem; /* Reduced padding for overall layout */
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: relative; /* Needed for absolute positioning of stamp */
+      }
+      .header-logo {
+        max-width: 150px; /* Set a max-width for the logo */
+        height: auto; /* Maintain aspect ratio */
+      }
+      .table-header th {
+        background-color: #f9fafb;
+        color: #4b5563;
+        font-weight: 600;
+        padding: 0.5rem 1rem; /* Reduced padding for table headers */
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      .table-body td {
+        padding: 0.5rem 1rem; /* Reduced padding for table cells */
+        border-bottom: 1px solid #e5e7eb;
+      }
+      .table-body tr:last-child td {
+        border-bottom: none; /* No border for the last row */
+      }
+      .table-body tr:nth-child(odd) {
+        background-color: #fefefe; /* Alternate row background for readability */
+      }
+      .table-body tr:hover {
+        background-color: #f3f4f6; /* Hover effect for table rows */
+      }
+      .contact-icons img {
+        max-width: 100%; /* Ensure image scales within its container */
+        height: auto; /* Maintain aspect ratio */
+      }
+
+      /* Stamp styling */
+      .stamp-overlay {
+        position: absolute;
+        transform: rotate(
+          -45deg
+        ); /* Rotated by -45 degrees for a slide angle */
+        opacity: 0.8;
+        z-index: 10; /* Ensure it's on top of other content */
+      }
+
+      .stamp-top-left {
+        top: 2rem;
+        left: 2rem;
+        width: 150px; /* Adjust size as needed */
+      }
+
+      .stamp-table-overlay {
+        width: 250px; /* Adjust size as needed */
+        top: 50%; /* Center vertically */
+        left: 50%; /* Center horizontally */
+        transform: translate(-50%, -50%) rotate(-45deg); /* Center and rotate */
+      }
+
+      /* Print-specific styles for better PDF alignment and rendering */
+      @media print {
+        body {
+          margin: 0 !important; /* Remove all body margins for print */
+          padding: 0 !important; /* Remove all body padding for print */
+          background-color: #fff !important; /* Ensure white background for print */
+          -webkit-print-color-adjust: exact; /* For better color printing in WebKit browsers */
+          color-adjust: exact; /* For better color printing in other browsers */
+          orphans: 3; /* Prevent single lines at the bottom of a page */
+          widows: 3; /* Prevent single lines at the top of a page */
+        }
+        .container {
+          max-width: 100% !important; /* Use full width for print */
+          margin: 0 !important; /* Remove margins for print */
+          padding: 0.5rem !important; /* Minimal padding for content within the container */
+          box-shadow: none !important; /* Remove shadows for print */
+          border-radius: 0 !important; /* Remove border-radius for print */
+        }
+        /* Adjust font sizes for print if necessary for compactness */
+        h1 {
+          font-size: 1.25rem !important;
+        }
+        h2 {
+          font-size: 1rem !important;
+        }
+        p,
+        span,
+        li,
+        td,
+        th {
+          font-size: 0.75rem !important;
+        } /* Smaller text for print */
+
+        /* Ensure table borders are visible and clear on print */
+        .table-header th,
+        .table-body td {
+          border-color: #d1d5db !important; /* Slightly darker border for print clarity */
+        }
+
+        /* Explicitly maintain flex and grid layouts for print */
+        .flex {
+          display: flex !important;
+        }
+        .grid {
+          display: grid !important;
+        }
+
+        /* Prevent sections from breaking across pages if possible */
+        section {
+          /* page-break-inside: avoid; */
+        }
+        .table-body tr {
+          page-break-inside: auto; /* Allow table rows to break if necessary */
+        }
+        /* Ensure the selected div content stays together */
+        .account-statement-header {
+          page-break-inside: avoid !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="p-0">
+    <div class="container">
+      <!-- Stamp at top-left -->
+      <img
+        src="stamp-removebg-preview.png"
+        alt="Stamp"
+        class="stamp-overlay stamp-top-left mt-4"
+      />
+
+      <!-- Header Section -->
+      <header class="flex items-center mb-4 pb-2 border-b border-gray-200">
+        <!-- Left side: Account Statement Title -->
+        <div>
+          <h1 class="text-xl font-bold text-gray-800">Account Statement</h1>
+          <p class="text-xs text-gray-500">as at 24 Jun 2025</p>
+        </div>
+        <!-- Center: Logo -->
+        <div class="flex-grow flex justify-center">
+          <!-- This div will take available space and center its content -->
+          <img
+            src="https://frstore.blob.core.windows.net/frisops/icon_2.png"
+            alt="Stanbic IBTC Logo"
+            class="header-logo rounded-md"
+          />
+        </div>
+        <!-- Right side: Address -->
+        <div class="flex flex-col items-end text-right">
+          <div class="text-xs">
+            <p class="text-gray-600">Plot 1678, Ozumba Mbadiwe Ave,</p>
+            <p class="text-gray-600">Victoria Island, Lagos, Nigeria</p>
+            <p class="text-gray-600">www.stanbicibtcassetmanagement.com</p>
+          </div>
+        </div>
+      </header>
+
+      <!-- Combined Details and Contact Channels Section -->
+      <section class="grid grid-cols-2 lg:grid-cols-2 gap-4 mb-4">
+        <!-- Left Column: General Details and Account Summary (stacked) -->
+        <div class="flex flex-col gap-4 lg:col-span-1">
+          <!-- General Details -->
+          <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">
+              General Details
+            </h2>
+            <div class="space-y-1 text-xs">
+              <p>
+                <strong class="font-medium">Account Holder:</strong> MRS
+                Ifeyinwa Chinelo Evans-Okosodo
+              </p>
+              <p>
+                <strong class="font-medium">Address:</strong> ORCHARD RESIDENCE,
+                PLOT 21 CHIEF YESUFU ABIODUN ONIRU ROAD, LAGOS, NG, Oniru,
+                VICTORIA ISLAND, LAGOS, Lagos, Nigeria (NG)
+              </p>
+              <p>
+                <strong class="font-medium">E-Account Number:</strong>
+                1345230275
+              </p>
+              <p>
+                <strong class="font-medium">Fund Name:</strong> Stanbic IBTC
+                Money Market Fund
+              </p>
+              <p><strong class="font-medium">Currency:</strong> NGN (Naira)</p>
+              <p>
+                <strong class="font-medium">Email:</strong>
+                mutualfunds@stanbicibtc.com
+              </p>
+              <p>
+                <strong class="font-medium">Call Centre:</strong> (01 280 5595)
+              </p>
+            </div>
+          </div>
+
+          <!-- Account Summary -->
+          <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">
+              Account Summary
+            </h2>
+            <div class="space-y-1 text-xs">
+              <p class="flex justify-between">
+                <span class="font-medium"
+                  >Total Contribution from Inception:</span
+                >
+                <span class="font-semibold text-green-700"
+                  >N138,304,000.00</span
+                >
+              </p>
+              <p class="flex justify-between">
+                <span class="font-medium"
+                  >Total Withdrawal from Inception:</span
+                >
+                <span class="font-semibold text-red-700">N82,063,001.00</span>
+              </p>
+              <p class="flex justify-between">
+                <span class="font-medium">Unrealised Interest:</span>
+                <span class="font-semibold text-gray-700">N-50,088,036.29</span>
+              </p>
+              <p class="flex justify-between">
+                <span class="font-medium">Total Realised Interest:</span>
+                <span class="font-semibold text-green-700">N1,383,625.66</span>
+              </p>
+              <p
+                class="flex justify-between text-base font-bold pt-1 border-t border-gray-200"
+              >
+                <span class="font-medium">Net Asset Value (NAV):</span>
+                <span class="text-blue-700">N7,536,588.37</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Contact Channels -->
+        <div
+          class="bg-white p-4 rounded-lg shadow-sm flex justify-center items-center lg:col-span-1"
+        >
+          <div class="contact-icons text-center">
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">
+              Contact Channels
+            </h2>
+            <!-- Contact icons image source - ensures display and responsiveness -->
+            <img
+              src="https://frstore.blob.core.windows.net/frisops/contact.png"
+              alt="Contact Icons"
+              style="max-width: 410px"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- Transaction History Table -->
+      <section class="mb-4 p-3 relative">
+        <!-- Stamp over the data table -->
+        <img
+          src="stamp-removebg-preview.png"
+          alt="Stamp"
+          class="stamp-overlay stamp-table-overlay"
+        />
+        <h2 class="text-lg font-semibold text-gray-700 mb-2">
+          Transaction History
+        </h2>
+        <div
+          class="overflow-x-auto rounded-lg shadow-sm border border-gray-200"
+        >
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="table-header">
+              <tr>
+                <th scope="col" class="px-3 py-2">Value Date</th>
+                <th scope="col" class="px-3 py-2">Description</th>
+                <th scope="col" class="px-3 py-2 text-right">Outflow</th>
+                <th scope="col" class="px-3 py-2 text-right">Inflow</th>
+                <th scope="col" class="px-3 py-2 text-right">Unit</th>
+                <!-- New Unit Column -->
+                <th scope="col" class="px-3 py-2 text-right">
+                  Running Balance
+                </th>
+              </tr>
+            </thead>
+            <tbody
+              class="divide-y divide-gray-200 table-body"
+              id="transactionTableBody"
+            >
+              <!-- Transaction rows truncated to approximately fit two pages -->
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  02 Dec 2022
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  S12862751 1345230275
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  5,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  5,000.00
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  08 Dec 2022
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  S11699675 1345230275 REF208717868000500000002
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  500,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  505,000.00
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  08 Dec 2022
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  S11743348 1345230275 REF208717868001000000002
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  1,000,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  1,505,000.00
+                </td>
+              </tr>
+
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  24 Mar 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  ONLINE-0046360345Online Redemption/2489588
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  100,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  54,123,298.56
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  24 Mar 2026
+                </td>
+                <td
+                  class="px-3 py-2 whitespace-normal text-xs text-gray-800"
+                ></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  1,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  54,122,298.56
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  24 Mar 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  getti Stauble ISTO Asvet The West
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  1,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  54,121,298.56
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  24 Mar 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  167- off Satthafon Streek
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  1.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  54,121,297.56
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  26 Mar 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  ONLINE-0046360345Online Redemption/2496311
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  4,000,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  50,121,297.56
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  31 Mar 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  Interest Gained (01/03/26-31/03/26)
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  16,681.85
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  50,137,979.41
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  07 Apr 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  ONLINE-0046360345Online Redemption/2522656
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  5,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  50,132,979.41
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  22 Apr 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  S26130050 1345230275
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  1,000,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  51,132,979.41
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  24 Apr 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  S60906927 NFT IFEYINWA C/1345230275 MF DD IFE
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  5,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  51,137,979.41
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  28 Apr 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  ONLINE-0046360345Online Redemption/2578436
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  500,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  50,637,979.41
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  30 Apr 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  Interest Gained (01/04/26-30/04/26)
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  4,838.40
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  50,642,817.81
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  30 Apr 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  ONLINE-0046360345Online Redemption/2588663
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  5,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  50,637,817.81
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  05 May 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  ONLINE-0046360345Online Redemption/2600866
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  5,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  50,632,817.81
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  09 May 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  ONLINE-0046360345Online Redemption/2612582
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  200,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  50,432,817.81
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  16 May 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  ONLINE-0046360345Online Redemption/2634357
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  100,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  50,332,817.81
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  19 May 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  ONLINE-0046360345Online Redemption/2637389
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  100,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  50,232,817.81
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  20 May 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  S79202847 1345230275
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  1,000,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  51,232,817.81
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  26 May 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  S86944498 NFT IFEYINWA C/1345230275 MF DD IFE
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  5,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  51,237,817.81
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  27 May 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  ONLINE-0046360345Online Redemption/2660960
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  5,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  51,232,817.81
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  27 May 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  ONLINE-0046360345Online Redemption/2660968
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  5,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  51,227,817.81
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  28 May 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  ONLINE-5151000100Online Redemption/2666174
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  10,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  51,217,817.81
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  28 May 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  ONLINE-5151000100Online Redemption/2666161
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  5,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  51,212,817.81
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  30 May 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  ONLINE-5151000100Online Redemption/2674479
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  5,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  51,207,817.81
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  31 May 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  Interest Gained (01/05/26-31/05/26)
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  11,806.85
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  51,219,624.66
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  02 Jun 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  ONLINE-0046360345Online Redemption/2680286
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  50,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  51,169,624.66
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  02 Jun 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  1345230275 STANBICIBTC MONEY MARKET
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  5,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  51,174,624.66
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  04 Jun 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  ONLINE-0046360345Online Redemption/2695579
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  800,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  50,374,624.66
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  05 Jun 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  ONLINE-0046360345Online Redemption/2696564
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  250,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  50,124,624.66
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  20 Jun 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  S84498811 1345230275
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  3,500,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  53,624,624.66
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  20 Jun 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  S81113009 1345230275
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  500,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  54,124,624.66
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-gray-800">
+                  23 Jun 2026
+                </td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  S18400738 1345230275
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right">
+                  3,500,000.00
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <!-- Unit Cell -->
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  57,624,624.66
+                </td>
+              </tr>
+              <!-- End of truncated transaction rows -->
+              <!-- Three empty rows for spacing -->
+              <tr>
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800"
+                ></td>
+                <td
+                  class="px-3 py-2 whitespace-normal text-xs text-gray-800"
+                ></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                ></td>
+              </tr>
+              <tr>
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800"
+                ></td>
+                <td
+                  class="px-3 py-2 whitespace-normal text-xs text-gray-800"
+                ></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                ></td>
+              </tr>
+              <tr>
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 border-none"
+                ></td>
+                <td
+                  class="px-3 py-2 whitespace-normal text-xs text-gray-800 border-none"
+                ></td>
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-right border-none"
+                ></td>
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-right border-none"
+                ></td>
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-right border-none"
+                ></td>
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right border-none"
+                ></td>
+              </tr>
+              <!-- New data rows -->
+              <tr>
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 border-dashed"
+                ></td>
+                <td
+                  class="px-3 py-2 whitespace-normal text-xs text-gray-800 border-dashed"
+                >
+                  Nav values
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  66,000.00
+                </td>
+              </tr>
+              <tr>
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800"
+                ></td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  Bid Price
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  499,500.00
+                </td>
+              </tr>
+              <tr>
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800"
+                ></td>
+                <td class="px-3 py-2 whitespace-normal text-xs text-gray-800">
+                  Today Bid Prices
+                </td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td class="px-3 py-2 whitespace-nowrap text-xs text-right"></td>
+                <td
+                  class="px-3 py-2 whitespace-nowrap text-xs text-gray-800 text-right"
+                >
+                  799,500.00
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Notes Section (Footer) -->
+      <section class="mt-4 p-4 bg-gray-50 rounded-lg shadow-sm">
+        <h2 class="text-lg font-semibold text-gray-700 mb-2">Notes:</h2>
+        <ul class="list-disc list-inside space-y-1 text-xs text-gray-700">
+          <li>
+            This is a computer-generated Statement and if issued without any
+            alteration requires no signature.
+          </li>
+          <li>
+            Withdrawals are processed at the BID PRICE on the relevant date.
+          </li>
+          <li>
+            Subscriptions are processed at the OFFER PRICE on the relevant date.
+          </li>
+          <li>
+            Further enquiries about this statement as well as personal details
+            update can be obtained by calling our call centre on 01-280-5595 or
+            01-2801266; or sending an email to mutualfunds@stanbicibtc.com.
+          </li>
+          <li>Past performance is not a guarantee of future performance.</li>
+        </ul>
+      </section>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const tableBody = document.getElementById("transactionTableBody");
+        if (tableBody) {
+          const rows = tableBody.getElementsByTagName("tr");
+          for (let i = 0; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName("td");
+            // Changed from 4 to 5 to account for the new 'Unit' column
+            if (cells.length >= 5) {
+              const outflowCell = cells[2]; // Third column (index 2) is Outflow
+              const inflowCell = cells[3]; // Fourth column (index 3) is Inflow
+              // const unitCell = cells[4]; // Fifth column (index 4) is Unit - not used for color logic
+
+              const outflowValue = outflowCell.textContent.trim();
+              const inflowValue = inflowCell.textContent.trim();
+
+              // Check if outflow has a value and apply red color
+              if (
+                outflowValue !== "" &&
+                parseFloat(outflowValue.replace(/,/g, "")) > 0
+              ) {
+                outflowCell.classList.add("text-red-600");
+              }
+
+              // Check if inflow has a value and apply green color
+              if (
+                inflowValue !== "" &&
+                parseFloat(inflowValue.replace(/,/g, "")) > 0
+              ) {
+                inflowCell.classList.add("text-green-600");
+              }
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

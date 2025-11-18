@@ -1,0 +1,187 @@
+import type { ControllerRenderProps } from "react-hook-form";
+
+import { FieldType, type FormField as FormFieldType } from "@/types/field";
+
+import {
+  FormControl,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
+import { Textarea } from "@/components/ui/textarea";
+import { FormFieldWrapper } from "@/components/form-field-wrapper";
+import { Card, CardContent } from "./ui/card";
+import { Label } from "./ui/label";
+import HorizontalLine from "./ui/horizontal";
+
+interface RenderFormFieldComponentProps {
+  formField: FormFieldType;
+  field: ControllerRenderProps<
+    {
+      [x: string]: any;
+    },
+    string
+  >;
+}
+
+// const data1 = { data: 4 };
+
+export function renderFormFieldComponentManager4({
+  formField,
+  field,
+}: RenderFormFieldComponentProps) {
+  switch (formField.type) {
+    case FieldType.INPUT:
+      return (
+        <FormFieldWrapper {...formField}>
+          <>
+            <Input
+              placeholder={formField.placeholder}
+              {...field}
+              disabled
+              value={String(formField.default)}
+            />
+
+            <div className="container mx-auto p-4 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-1  flex-col-reverse">
+                <div>
+                  <Label>Comments</Label>
+                  <Textarea
+                    placeholder="Enter text here..."
+                    className="w-full h-full resize"
+                    onChange={(e) => {
+                      // console.log(e.target.value);
+                      formField.commentsDivisional = e.target.value;
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </>
+        </FormFieldWrapper>
+      );
+    case FieldType.TEXTAREA:
+      return (
+        <FormFieldWrapper {...formField}>
+          <Textarea
+            placeholder={formField.placeholder}
+            className="resize-none"
+            {...field}
+            value={String(formField.default)}
+          />
+          <div className="flex items-end justify-end border-dotted ">
+            <Card className="w-1/4 p-2">
+              <CardContent>
+                <div>User: {String(formField.default)}</div>
+                <div>HOD: {String(formField.hodInput)}</div>
+              </CardContent>
+            </Card>
+          </div>
+        </FormFieldWrapper>
+      );
+    case FieldType.NUMBER_INPUT:
+      return (
+        <FormFieldWrapper {...formField}>
+          <Input placeholder={formField.placeholder} {...field} type="number" />
+        </FormFieldWrapper>
+      );
+
+    case FieldType.RADIO_GROUP:
+      return (
+        <>
+          <HorizontalLine className="mt-3" />
+
+          <FormItem className="space-y-3">
+            <FormLabel>{formField.label}</FormLabel>
+            <FormControl>
+              <>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={formField?.groupHeadInput as string}
+                  onChange={(e: any) => {
+                    console.log(e.target?.value);
+                    formField.appraisalInput = e.target?.value;
+                  }}
+                  className="flex flex-col space-y-1">
+                  {formField.choices.map((choice, idx) => (
+                    <FormItem
+                      className="flex items-center space-x-3 space-y-0"
+                      key={idx}>
+                      <FormControl>
+                        <RadioGroupItem value={choice.value} />
+                      </FormControl>
+                      <FormLabel className="font-normal">
+                        {choice.label}
+                      </FormLabel>
+                    </FormItem>
+                  ))}
+                </RadioGroup>
+                {/* <HorizontalLine /> */}
+                <div className="container mx-auto p-4 space-y-4 ">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {/* <Card className="h-full mt-6 bg-slate-600/65">
+                      <CardContent className="p-4 h-full">
+                        <div>User: {String(formField.default)}</div>
+                        <div>HOD: {String(formField.hodInput)}</div>
+                        <div>
+                          DIVISIONAL: {String(formField.divisionalInput)}
+                        </div>
+                        <div>
+                          Group Head: {String(formField.groupHeadInput)}
+                        </div>
+                      </CardContent>
+                    </Card> */}
+
+                    <Card className="h-full mt-6 bg-gradient-to-r from-green-400 to-blue-500">
+                      <CardContent className="p-4 h-full">
+                        <div className="font-bold">
+                          User: {String(formField?.default)}
+                        </div>
+                        <div className="font-bold">
+                          HOD: {String(formField?.hodInput)}
+                        </div>
+                        <div className="font-bold">
+                          DIVISIONAL: {String(formField.divisionalInput)}
+                        </div>
+                        <div className="font-bold">
+                          Group Head: {String(formField.groupHeadInput)}
+                        </div>
+                      </CardContent>
+                    </Card>
+                    <div>
+                      <Label>Comments</Label>
+
+                      <Textarea
+                        placeholder="Enter text here..."
+                        className="w-full h-full resize"
+                        onChange={(e) => {
+                          // console.log(e.target.value);
+                          formField.appraisalComment = e.target.value;
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                {formField.commentsDivisional ? (
+                  <div className="m-4 mt-5 flex flex-col p-3 w-full rounded-lg bg-black text-white font-bold">
+                    HOD's Comment: {formField.comments}
+                    <div>
+                      Divisional's Comment: {formField.commentsDivisional}
+                    </div>
+                    <div>
+                      Group's Head Comment: {formField.commentsGroupHead}
+                    </div>
+                  </div>
+                ) : null}
+              </>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </>
+      );
+  }
+}

@@ -1,0 +1,109 @@
+"use client";
+
+import AdminFlowLog from "@/components/admin-page-ui/admin-flow-log/admin-flow.log";
+import { UserAvatarMenu } from "@/components/Avatar/AvatarHeader";
+
+import { ClearForm } from "@/components/clear-form";
+
+import { SidebarLeftUser } from "@/components/ui-form/sidebar-leftUser";
+import { SidebarRight } from "@/components/ui-form/sidebar-right";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+} from "@/components/ui/breadcrumb";
+import { Separator } from "@/components/ui/separator";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import UserAppraisalUI from "@/components/user-appraisal-page/user-appraisal-page";
+import UserResultLog from "@/components/user-ui/user-log/user-result-log";
+import HeroCard from "@/components/usercomponent/hero-section/hero-section";
+import { useGetUserProfile } from "@/zustand/store";
+
+import { UserButton } from "@clerk/nextjs";
+
+export default function Page() {
+  const { profile, getUserData, isloading, page, role } = useGetUserProfile();
+  return (
+    <SidebarProvider>
+      <SidebarLeftUser />
+      <SidebarInset>
+        <header className="sticky top-0 flex h-14  p-2  shrink-0 items-center gap-2 bg-background">
+          <div className="flex flex-1 items-center gap-2 px-3">
+            <SidebarTrigger />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="line-clamp-1">
+                    <div className="flex items-center gap-4">
+                      <div className="flex space-x-1">
+                        <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      </div>
+                      <h1 className="text-lg font-semibold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+                        HR Project Management & Task Tracking
+                      </h1>
+                    </div>
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+          {/* <UserButton /> */}
+          <UserAvatarMenu />
+        </header>
+        {/* Body  */}
+        {/*<div className="flex w-full flex-col gap-4 p-4 -mb-5">
+          <Tabs defaultValue="preview" className="flex-1">
+            <div className="mx-auto flex w-full  flex-col gap-4 rounded-md border shadow-sm">
+              <div className="flex items-center gap-1.5 border-b p-4">
+                <div className="h-2.5 w-2.5 rounded-full bg-red-500"></div>
+                <div className="h-2.5 w-2.5 rounded-full bg-yellow-500"></div>
+                <div className="h-2.5 w-2.5 rounded-full bg-green-500"></div>
+                <ClearForm />
+              </div>
+              <TabsList className="w-full justify-start rounded-none border-b bg-transparent p-1">
+                <TabsTrigger
+                  value="preview"
+                  className="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                >
+                  <div>Appraisal</div>
+                </TabsTrigger>
+
+                <TabsTrigger
+                  value="logs"
+                  className="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                >
+                  <div>Feedback Log(s)</div>
+                </TabsTrigger>
+                {/* <TabsTrigger
+                  value="code"
+                  className="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                >
+                  Code
+                </TabsTrigger> 
+              </TabsList>
+              <TabsContent value="preview" className="m-4 p-2">
+                {" "}
+                <HeroCard />
+              </TabsContent>
+              <TabsContent value="logs" className="m-4 p-2">
+                {" "}
+                <UserResultLog />
+              </TabsContent>
+            </div>
+          </Tabs>
+        </div> **/}
+        <UserAppraisalUI email={profile?.email} />
+      </SidebarInset>
+      <SidebarRight />
+    </SidebarProvider>
+  );
+}

@@ -1,0 +1,72 @@
+"use client";
+
+import { UserAvatarMenu } from "@/components/Avatar/AvatarHeader";
+import { FormPreviewManager } from "@/components/form-preview-manager";
+import { SidebarLeft } from "@/components/ui-form/sidebar-left";
+import { SidebarRight } from "@/components/ui-form/sidebar-right";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+} from "@/components/ui/breadcrumb";
+import { Separator } from "@/components/ui/separator";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { UserButton } from "@clerk/nextjs";
+import { useQuery } from "@tanstack/react-query";
+import React from "react";
+
+const adminPage = ({}: { params: { id: string } }) => {
+  const { data } = useQuery({
+    queryKey: ["form_answers"],
+    queryFn: async () => {
+      try {
+        return await fetch(`http://localhost:3000/operations/answer/${1}`)
+          .then((res: any) => res.json())
+          .then((data: any) => data?.users_answered?.question);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  });
+
+  console.log(data);
+  return (
+    <>
+      {" "}
+      <SidebarProvider>
+        <SidebarLeft />
+        <SidebarInset>
+          <header className="sticky top-0 flex h-14 p-2 shrink-0 items-center gap-2 bg-background">
+            <div className="flex flex-1 items-center gap-2 px-3">
+              <SidebarTrigger />
+              <Separator orientation="vertical" className="mr-2 h-4" />
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem>
+                    <BreadcrumbPage className="line-clamp-1">
+                      HR Project Management & Task
+                    </BreadcrumbPage>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
+            </div>
+            <UserAvatarMenu />
+          </header>
+          {/* Body  */}
+
+          <div className="flex flex-1 flex-col gap-4 p-4 mt-4">
+            <FormPreviewManager form_fields={data} />
+          </div>
+        </SidebarInset>
+        <SidebarRight />
+      </SidebarProvider>
+    </>
+  );
+};
+
+export default adminPage;
