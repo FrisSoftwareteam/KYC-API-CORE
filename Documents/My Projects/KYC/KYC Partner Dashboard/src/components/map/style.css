@@ -1,0 +1,16 @@
+ .dark-map .vis-react-google-map .vis-react-google-map__road {
+    background: red;
+    stroke: 'red';
+  /* Styles for roads (e.g., stroke: #444, stroke-width: 2) */
+}
+
+.dark-map .vis-react-google-map .vis-react-google-map__label {
+  /* Styles for labels (e.g., fill: #fff, font-weight: bold) */
+  background: red;
+  stroke: 'red';
+}
+
+.dark-map .vis-react-google-map .marker {
+  /* Assuming a `marker` class for markers */
+  /* Styles for markers (e.g., fill: #f00, stroke: #fff, stroke-width: 2) */
+}

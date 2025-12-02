@@ -1,0 +1,201 @@
+@page "/professional-bodies"
+@inject HttpClient Http
+
+<PageTitle>Professional Body Setup</PageTitle>
+
+<div class="designations-page">
+    <h3>Professional Body Setup</h3>
+    <form class="add-form grid-form" @onsubmit="CreateBody">
+        <div class="field">
+            <label>Institution Name</label>
+            <input @bind="newInstitution" placeholder="Institution name" required />
+        </div>
+        <div class="field">
+            <label>Acronym</label>
+            <input @bind="newAcronym" placeholder="Acronym" />
+        </div>
+        <div class="field">
+            <label>Award</label>
+            <input @bind="newAward" placeholder="Award" />
+        </div>
+        <div class="field actions-row">
+            <button class="cta" type="submit">Save</button>
+            @if (!string.IsNullOrWhiteSpace(error))
+            {
+                <span class="error">@error</span>
+            }
+        </div>
+    </form>
+
+    <div class="designation-list">
+        <div class="list-header body-header">
+            <div>Institution Name</div>
+            <div>Acronym</div>
+            <div>Award</div>
+            <div class="actions">Actions</div>
+        </div>
+        @if (items.Count == 0)
+        {
+            <div class="row empty">No records yet.</div>
+        }
+        else
+        {
+            @foreach (var item in items)
+            {
+                <div class="row body-row">
+                    @if (editId == item.Id)
+                    {
+                        <input @bind="editInstitution" class="inline-input" placeholder="Institution name" />
+                        <input @bind="editAcronym" class="inline-input" placeholder="Acronym" />
+                        <input @bind="editAward" class="inline-input" placeholder="Award" />
+                    }
+                    else
+                    {
+                        <div>@item.InstitutionName</div>
+                        <div>@item.Acronym</div>
+                        <div>@item.Award</div>
+                    }
+                    <div class="actions">
+                        @if (editId == item.Id)
+                        {
+                            <button type="button" @onclick="@(() => SaveEdit(item.Id))">Save</button>
+                            <button type="button" @onclick="CancelEdit">Cancel</button>
+                        }
+                        else
+                        {
+                            <button type="button" @onclick="@(() => BeginEdit(item))">Edit</button>
+                            <button type="button" class="danger" @onclick="@(() => Delete(item.Id))">Delete</button>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    private List<ProfessionalBodyDto> items = new();
+    private string newInstitution = string.Empty;
+    private string newAcronym = string.Empty;
+    private string newAward = string.Empty;
+    private string error = string.Empty;
+
+    private int? editId = null;
+    private string editInstitution = string.Empty;
+    private string editAcronym = string.Empty;
+    private string editAward = string.Empty;
+
+    public record ProfessionalBodyDto(int Id, string InstitutionName, string Acronym, string Award);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load()
+    {
+        error = string.Empty;
+        try
+        {
+            items = await Http.GetFromJsonAsync<List<ProfessionalBodyDto>>("professional-bodies") ?? new();
+        }
+        catch
+        {
+            error = "Unable to load records.";
+        }
+    }
+
+    private async Task CreateBody()
+    {
+        error = string.Empty;
+        try
+        {
+            var resp = await Http.PostAsJsonAsync("professional-bodies", new
+            {
+                InstitutionName = newInstitution,
+                Acronym = newAcronym,
+                Award = newAward
+            });
+            if (resp.IsSuccessStatusCode)
+            {
+                newInstitution = string.Empty;
+                newAcronym = string.Empty;
+                newAward = string.Empty;
+                await Load();
+            }
+            else
+            {
+                error = "Could not add record.";
+            }
+        }
+        catch
+        {
+            error = "Could not add record.";
+        }
+    }
+
+    private void BeginEdit(ProfessionalBodyDto dto)
+    {
+        editId = dto.Id;
+        editInstitution = dto.InstitutionName;
+        editAcronym = dto.Acronym;
+        editAward = dto.Award;
+        error = string.Empty;
+    }
+
+    private void CancelEdit()
+    {
+        editId = null;
+        editInstitution = string.Empty;
+        editAcronym = string.Empty;
+        editAward = string.Empty;
+    }
+
+    private async Task SaveEdit(int id)
+    {
+        error = string.Empty;
+        try
+        {
+            var resp = await Http.PutAsJsonAsync($"professional-bodies/{id}", new
+            {
+                InstitutionName = editInstitution,
+                Acronym = editAcronym,
+                Award = editAward
+            });
+            if (resp.IsSuccessStatusCode)
+            {
+                CancelEdit();
+                await Load();
+            }
+            else
+            {
+                error = "Could not save changes.";
+            }
+        }
+        catch
+        {
+            error = "Could not save changes.";
+        }
+    }
+
+    private async Task Delete(int id)
+    {
+        error = string.Empty;
+        try
+        {
+            var resp = await Http.DeleteAsync($"professional-bodies/{id}");
+            if (resp.IsSuccessStatusCode)
+            {
+                await Load();
+            }
+            else
+            {
+                error = "Could not delete.";
+            }
+        }
+        catch
+        {
+            error = "Could not delete.";
+        }
+    }
+}

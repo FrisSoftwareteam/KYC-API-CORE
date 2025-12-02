@@ -1,0 +1,162 @@
+@page "/designations"
+@inject HttpClient Http
+
+<PageTitle>Designations</PageTitle>
+
+<div class="designations-page">
+    <h3>Designation</h3>
+    <form class="add-form" @onsubmit="CreateDesignation">
+        <input @bind="newName" placeholder="Add designation" required />
+        <button class="cta" type="submit">Add</button>
+        @if (!string.IsNullOrWhiteSpace(error))
+        {
+            <span class="error">@error</span>
+        }
+    </form>
+
+    <div class="designation-list">
+        <div class="list-header">
+            <div>Name</div>
+            <div class="actions">Actions</div>
+        </div>
+        @if (items.Count == 0)
+        {
+            <div class="row empty">No designations yet.</div>
+        }
+        else
+        {
+            @foreach (var item in items)
+            {
+                <div class="row">
+                    @if (editId == item.Id)
+                    {
+                        <input @bind="editName" class="inline-input" />
+                    }
+                    else
+                    {
+                        <div>@item.Name</div>
+                    }
+                    <div class="actions">
+                        @if (editId == item.Id)
+                        {
+                            <button type="button" @onclick="@(() => SaveEdit(item.Id))">Save</button>
+                            <button type="button" @onclick="CancelEdit">Cancel</button>
+                        }
+                        else
+                        {
+                            <button type="button" @onclick="@(() => BeginEdit(item))">Edit</button>
+                            <button type="button" class="danger" @onclick="@(() => Delete(item.Id))">Delete</button>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    private List<DesignationDto> items = new();
+    private string newName = string.Empty;
+    private string error = string.Empty;
+    private int? editId = null;
+    private string editName = string.Empty;
+
+    public record DesignationDto(int Id, string Name, DateTime CreatedAt, DateTime UpdatedAt);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load()
+    {
+        error = string.Empty;
+        try
+        {
+            items = await Http.GetFromJsonAsync<List<DesignationDto>>("designations") ?? new();
+        }
+        catch
+        {
+            error = "Unable to load designations.";
+        }
+    }
+
+    private async Task CreateDesignation()
+    {
+        error = string.Empty;
+        try
+        {
+            var resp = await Http.PostAsJsonAsync("designations", new { Name = newName });
+            if (resp.IsSuccessStatusCode)
+            {
+                newName = string.Empty;
+                await Load();
+            }
+            else
+            {
+                error = "Could not add designation.";
+            }
+        }
+        catch
+        {
+            error = "Could not add designation.";
+        }
+    }
+
+    private void BeginEdit(DesignationDto d)
+    {
+        editId = d.Id;
+        editName = d.Name;
+        error = string.Empty;
+    }
+
+    private void CancelEdit()
+    {
+        editId = null;
+        editName = string.Empty;
+    }
+
+    private async Task SaveEdit(int id)
+    {
+        error = string.Empty;
+        try
+        {
+            var resp = await Http.PutAsJsonAsync($"designations/{id}", new { Name = editName });
+            if (resp.IsSuccessStatusCode)
+            {
+                editId = null;
+                editName = string.Empty;
+                await Load();
+            }
+            else
+            {
+                error = "Could not save changes.";
+            }
+        }
+        catch
+        {
+            error = "Could not save changes.";
+        }
+    }
+
+    private async Task Delete(int id)
+    {
+        error = string.Empty;
+        try
+        {
+            var resp = await Http.DeleteAsync($"designations/{id}");
+            if (resp.IsSuccessStatusCode)
+            {
+                await Load();
+            }
+            else
+            {
+                error = "Could not delete.";
+            }
+        }
+        catch
+        {
+            error = "Could not delete.";
+        }
+    }
+}
