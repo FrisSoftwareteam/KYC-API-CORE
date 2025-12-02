@@ -1,0 +1,29 @@
+# ignore vs code project config files
+.vs
+.vscode
+
+# ignore logs
+logs
+*.log
+
+# ignore 3rd party lib
+node_modules
+
+# ignore key
+*.pem
+
+# Ignore built files
+build
+
+# ignore test converage
+coverage
+
+# Environment varibles
+.env
+.env.local
+.env.staging
+.env.production
+
+/.idea/
+
+src/privatekeys

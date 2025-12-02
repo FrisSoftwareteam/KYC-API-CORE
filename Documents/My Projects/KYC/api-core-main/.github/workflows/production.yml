@@ -1,0 +1,31 @@
+name: Production Core Service Deployment
+
+env:
+  SERVICE_NAME: firstregistrars/core-service
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Deploy-Dev:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: branch_name
+      - name: install ssh keys
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+      - name: save github sha
+        run: |
+          echo "TAG=$(echo $GITHUB_SHA | head -c7)" >> $GITHUB_OUTPUT
+        id: version
+      - name: login to instance and deploy
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.PROD_WORK_DIR }} && git pull && docker build -t ${{ env.SERVICE_NAME }}:${{ steps.branch_name.outputs.branch }}.${{ steps.version.outputs.TAG }} . && sed -i 's|${{ env.SERVICE_NAME }}.${{ steps.branch_name.outputs.branch }}.*|${{ env.SERVICE_NAME }}:${{ steps.branch_name.outputs.branch }}.${{ steps.version.outputs.TAG }}|' ${{ secrets.DOCKER_COMPOSE_DIR }}/docker-compose.yml && cd ${{ secrets.DOCKER_COMPOSE_DIR }} && docker compose stop && docker compose up -d && docker system prune --all -f && docker system prune --volumes -a -f && exit"
+      - name: cleanup
+        run: rm -rf ~/.ssh
